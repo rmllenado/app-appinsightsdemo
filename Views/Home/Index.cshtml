@@ -1,17 +1,29 @@
-﻿<div class="alert alert-warning" role="alert">
+﻿@model IEnumerable<Quote>
+
+<div class="alert alert-warning" role="alert">
     Remember to disable ADBLOCK!
 </div>
 <div style="margin-bottom: 20px;">
-    <button id="button" class="btn btn-primary">Call Functions</button>
+    <button id="btnCallFx" class="btn btn-primary">Call Function</button>
+</div>
+<div style="margin-bottom: 20px;">
+    <button id="btnCallFailingFx" class="btn btn-primary">Call Failing Function</button>
+</div>
+<div style="margin-bottom: 20px;">
+    <button id="btnDivideByOne" class="btn btn-primary">SQL UDF Divide By One</button>
+</div>
+<div style="margin-bottom: 20px;">
+    <button id="btnDivideByZero" class="btn btn-primary">SQL UDF Divide By Zero</button>
 </div>
 <div class="alert alert-primary" role="alert" id="message"style="display: none;"></div>
 <div class="alert alert-danger" role="alert" id="error"style="display: none;"></div>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
 <script>
     var url = "/api/Demo";
-    $( "#button" ).click(function() {
+    $("#btnCallFx").click(function () {
         $( "#message" ).text("Loading...");
-        $.get(url)
+        $("#error").text(null);
+        $.get(url+'/call/fx')
             .done(function(data) {
                 $( "#message" ).text(data).show();
             })
@@ -19,4 +31,53 @@
                 $( "#error" ).text(JSON.stringify(error)).show();
             })
     });
+    $("#btnCallFailingFx").click(function () {
+        $("#message").text("Loading...");
+        $("#error").text(null);
+        $.get(url + '/call/failingfx')
+            .done(function (data) {
+                $("#message").text(data).show();
+            })
+            .fail(function (error) {
+                $("#error").text(JSON.stringify(error)).show();
+            })
+    });
+    $('#btnDivideByOne').click(function(){
+        $("#message").text("Loading...");
+        $("#error").text(null);
+        $.get(url+'/call/sqldividebyone')
+            .done(function (data) {
+                $("#message").text(data).show();
+            })
+            .fail(function (error) {
+                $("#error").text(JSON.stringify(error)).show();
+            })
+    });
+    $('#btnDivideByZero').click(function(){
+        $("#message").text("Loading...");
+        $("#error").text(null);
+        $.get(url+'/call/sqldividebyzero')
+            .done(function (data) {
+                $("#message").text(data).show();
+            })
+            .fail(function (error) {
+                $("#error").text(JSON.stringify(error)).show();
+            })
+    });
 </script>
+
+<table class="tabe">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.AQuote)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.AQuote)</td>
+            </tr>
+        }
+    </tbody>
+</table>
